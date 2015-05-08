@@ -1,3 +1,37 @@
+/*
+*	An expansion of the Bezier surface example, this example deals with an array of Bezier surfaces joined at the edges to form
+*	a Bezier-Spline. A B-Spline is used to make the famous Utah teapot, so that's exactly what this program does.
+*	It also includes a wireframe for the teapot for additional clarity.
+*
+*	1) RenderManager
+*	- This class maintains data for everything that needs to be drawn in two display lists, one for non-interactive shapes and
+*	one for interactive shapes. It handels the updating and drawing of these shapes.
+*
+*	2) InputManager
+*	- This class handles all user input from the mouse and keyboard.
+*
+*	3) CameraManager
+*	- This class maintains the data for the view and projection matrices used in the rendering pipeline. It also updates the position
+*	of the camera based on user input.
+*
+*	RenderShape
+*	- Holds the instance data for a shape that can be rendered to the screen. This includes a transform, a vao, a shader, the drawing
+*	mode (eg triangles, lines), it's active state, and its color
+*
+*	InteractiveShape
+*	- Inherits from RenderShape, possessing all the same properties. Additionally, it has a collider and can use it to check collisions against
+*	world boundries, other colliders, and the cursor.
+*
+*	Init_Shader
+*	- Contains static functions for loading, compiling and linking shaders.
+*
+*	Patch
+*	- Holds data for the Bezier surface and the helper shapes that go along with it. Generates and dynamically adjusts the vertices of the surface
+*	based on the positions of the control points and the mathematical function above.
+*
+*	B_Spline
+*	- Generates and holds an array of Patch objects and gives them a single transform. 
+*/
 #include <GLEW\GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLM\gtc\type_ptr.hpp>
@@ -8,7 +42,6 @@
 #include <ctime>
 
 #include "RenderShape.h"
-#include "InteractiveShape.h"
 #include "Init_Shader.h"
 #include "RenderManager.h"
 #include "InputManager.h"

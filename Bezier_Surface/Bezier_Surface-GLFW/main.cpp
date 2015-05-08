@@ -1,3 +1,37 @@
+/*
+*	An expansion of the Bezier curve example, this example deals with a Bezier surface, now with 16 control points. The 
+*	math theory is still the same, just the curve now needs to be solved for more control points. To find the position
+*	of a given point on the surface, each row of control points needs to be solved at that column to form 4 meta-control
+*	points that can then be used to solve to for the current vertex position.
+*	This example also includes expanded camera functionality so you can get a better look at that curve.
+*	There are 3 static component classes that make up the base functionality for this program
+*
+*	1) RenderManager
+*	- This class maintains data for everything that needs to be drawn in two display lists, one for non-interactive shapes and
+*	one for interactive shapes. It handels the updating and drawing of these shapes.
+*
+*	2) InputManager
+*	- This class handles all user input from the mouse and keyboard.
+*
+*	3) CameraManager
+*	- This class maintains the data for the view and projection matrices used in the rendering pipeline. It also updates the position
+*	of the camera based on user input.
+*
+*	RenderShape
+*	- Holds the instance data for a shape that can be rendered to the screen. This includes a transform, a vao, a shader, the drawing
+*	mode (eg triangles, lines), it's active state, and its color
+*
+*	InteractiveShape
+*	- Inherits from RenderShape, possessing all the same properties. Additionally, it has a collider and can use it to check collisions against
+*	world boundries, other colliders, and the cursor.
+*
+*	Init_Shader
+*	- Contains static functions for loading, compiling and linking shaders.
+*
+*	Patch
+*	- Holds data for the Bezier surface and the helper shapes that go along with it. Generates and dynamically adjusts the vertices of the surface
+*	based on the positions of the control points and the mathematical function above.
+*/
 #include <GLEW\GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLM\gtc\type_ptr.hpp>

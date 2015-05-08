@@ -37,8 +37,6 @@ private:
 	static std::vector<RenderShape*> _shapes;
 	static std::vector<InteractiveShape*> _interactiveShapes;
 
-	static glm::mat4 _projMat;
-
 	static bool _shapeMoved;
 	static int _selectedShape;
 };

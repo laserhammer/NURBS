@@ -1,7 +1,6 @@
 #include "Patch.h"
 #include "RenderManager.h"
 #include "RenderShape.h"
-#include "InteractiveShape.h"
 #include "Init_Shader.h"
 #include "InputManager.h"
 
@@ -40,7 +39,6 @@ Patch::Patch(RenderShape& markerTemplate, RenderShape& slopeLineTemplate)
 	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	_curve = new RenderShape(_vaoTris, NUM_ELEMENTS, GL_TRIANGLES, slopeLineTemplate.shader(), glm::vec4(0.6f, 0.6f, 0.6f, 1.0f));
-	//_curve = new RenderShape(_vaoTris, NUM_LINE_ELEMENTS, GL_LINES, slopeLineTemplate.shader(), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), false);
 
 	_curve->transform().parent = &_transform;
 	

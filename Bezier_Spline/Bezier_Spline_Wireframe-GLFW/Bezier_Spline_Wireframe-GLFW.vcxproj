@@ -86,7 +86,6 @@
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Init_Shader.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="InteractiveShape.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Patch.cpp" />
     <ClCompile Include="RenderManager.cpp" />
@@ -97,7 +96,6 @@
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Init_Shader.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="InteractiveShape.h" />
     <ClInclude Include="Patch.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderShape.h" />

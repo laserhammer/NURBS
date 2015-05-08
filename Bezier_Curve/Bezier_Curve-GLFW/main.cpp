@@ -1,3 +1,42 @@
+/*
+*	This example rather than dealing with static meshes, deals with dynamically generated shapes
+*	based on Bernstein polynomials. This first on focuses on the the 2-D Bezier curve. The curve
+*	generated based on a mathematical formula which is in this case. 
+*
+*	(1 - t)^3*A + 3t(1 - t)^2*B + 3t^2(1 - t)*C + t^3*D
+*
+*	This is the third order Bernstein polynomial. Any lower order represents the derivation of the 
+*	one abobe and every higher order represents the integration of the one below. Also the order
+*	of the polynomial determines how many control points will be required to determine its values.
+*	For this formula "t" represents the location along the curve between 0 and 1, 0 being at the first
+*	control point and 1 being at the last control point. 
+*	A, B, C and D are position vectors representing the locations of each of the four control points.
+*	To see some other BernStein polynomials see here: http://en.wikipedia.org/wiki/Bernstein_polynomial
+*	There are 2 static component classes that make up the base functionality for this program
+*
+*	1) RenderManager
+*	- This class maintains data for everything that needs to be drawn in two display lists, one for non-interactive shapes and 
+*	one for interactive shapes. It handels the updating and drawing of these shapes.
+*
+*	2) InputManager
+*	- This class handles all user input from the mouse and keyboard.
+*
+*	RenderShape
+*	- Holds the instance data for a shape that can be rendered to the screen. This includes a transform, a vao, a shader, the drawing
+*	mode (eg triangles, lines), it's active state, and its color
+*
+*	InteractiveShape
+*	- Inherits from RenderShape, possessing all the same properties. Additionally, it has a collider and can use it to check collisions against
+*	world boundries, other colliders, and the cursor. 
+*
+*	Init_Shader
+*	- Contains static functions for loading, compiling and linking shaders. 
+*
+*	Bezier_Curve
+*	- Holds data for the bezier curve and the helper shapes that go along with it. Generates and dynamically adjusts the vertices of the curve
+*	based on the positions of the control points and the mathematical function above.
+*/
+
 #include <GLEW\GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLM\gtc\type_ptr.hpp>
@@ -54,48 +93,29 @@ void initShaders()
 	int numShaders = 2;
 	
 	shaderProgram = initShaders(shaders, types, numShaders);
-	
-	// Bind buffer data to shader values
-	posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	uTransform = glGetUniformLocation(shaderProgram, "transform");
 	uColor = glGetUniformLocation(shaderProgram, "color");
 }
 
-void init()
+void initGeometry()
 {
-	if (!glfwInit()) exit(EXIT_FAILURE);
-
-	//Create window
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-	window = glfwCreateWindow(800, 600, "K-D_Tree-GLFW", NULL, NULL); // Windowed
-
-	//Activate window
-	glfwMakeContextCurrent(window);
-
-	glewExperimental = true;
-	glewInit();
-
 	// Store the data for the triangles in a buffer that the gpu can use to draw
+	glGenVertexArrays(1, &vao0);
+	glBindVertexArray(vao0);
+
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &vao0);
-	glBindVertexArray(vao0);
 
 	glGenBuffers(1, &ebo0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo0);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
-	// Compile shaders
-	initShaders();
+	// Bind buffer data to shader values
+	posAttrib = glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glGenVertexArrays(1, &vao1);
 	glBindVertexArray(vao1);
@@ -108,7 +128,30 @@ void init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo1);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(outlineElements), outlineElements, GL_STATIC_DRAW);
 
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+}
+
+void init()
+{
+	if (!glfwInit()) exit(EXIT_FAILURE);
+
+	//Create window
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+	window = glfwCreateWindow(800, 600, "Bezier_Curve-GLFW", NULL, NULL); // Windowed
+
+	//Activate window
+	glfwMakeContextCurrent(window);
+
+	glewExperimental = true;
+	glewInit();
+
 	initShaders();
+	initGeometry();
 
 	glfwSetTime(0.0);
 
@@ -138,7 +181,7 @@ void step()
 	InputManager::Update();
 
 	// Get delta time since the last frame
-	float dt = glfwGetTime();
+	float dt = (float)glfwGetTime();
 	glfwSetTime(0.0);
 
 	int verts = bezierCurve->numVerts();
@@ -165,8 +208,8 @@ void cleanUp()
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ebo0);
 	glDeleteBuffers(1, &ebo1);
-	glDeleteBuffers(1, &vao0);
-	glDeleteBuffers(1, &vao1);
+	glDeleteVertexArrays(1, &vao0);
+	glDeleteVertexArrays(1, &vao1);
 
 	RenderManager::DumpData();
 

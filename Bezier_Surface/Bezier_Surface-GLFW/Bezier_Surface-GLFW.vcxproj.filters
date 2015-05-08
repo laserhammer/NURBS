@@ -24,9 +24,6 @@
     <ClCompile Include="RenderShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BezierCurve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CameraManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,9 +48,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BezierCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CameraManager.h">
