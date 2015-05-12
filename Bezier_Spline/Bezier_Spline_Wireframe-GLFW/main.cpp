@@ -1,4 +1,25 @@
 /*
+Bezier Spline Wireframe
+(c) 2015
+original authors: Benjamin Robbins
+Written under the supervision of David I. Schwartz, Ph.D., and
+supported by a professional development seed grant from the B. Thomas
+Golisano College of Computing & Information Sciences
+(https://www.rit.edu/gccis) at the Rochester Institute of Technology.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 *	An expansion of the Bezier surface example, this example deals with an array of Bezier surfaces joined at the edges to form
 *	a Bezier-Spline. A B-Spline is used to make the famous Utah teapot, so that's exactly what this program does.
 *	It also includes a wireframe for the teapot for additional clarity.
@@ -296,11 +317,6 @@ void initShaders()
 	
 	shaderProgram = initShaders(shaders, types, numShaders);
 	
-	// Bind buffer data to shader values
-	posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
 	uTransform = glGetUniformLocation(shaderProgram, "transform");
 	uColor = glGetUniformLocation(shaderProgram, "color");
 }
@@ -323,6 +339,8 @@ void init()
 	glewExperimental = true;
 	glewInit();
 
+	initShaders();
+
 	// Store the data for the triangles in a buffer that the gpu can use to draw
 	glGenVertexArrays(1, &vao0);
 	glBindVertexArray(vao0);
@@ -335,8 +353,10 @@ void init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo0);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
-	// Compile shaders
-	initShaders();
+	// Bind buffer data to shader values
+	posAttrib = glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glGenVertexArrays(1, &vao1);
 	glBindVertexArray(vao1);
@@ -349,7 +369,10 @@ void init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo1);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(outlineElements), outlineElements, GL_STATIC_DRAW);
 
-	initShaders();
+	// Bind buffer data to shader values
+	posAttrib = glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(posAttrib);
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glfwSetTime(0.0);
 
